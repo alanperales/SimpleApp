@@ -1,3 +1,4 @@
+<%@page import="com.alan.init.JDBCHelper"%>
 <%@page import="java.sql.SQLException"%>
 <%@page import="java.sql.DriverManager"%>
 <%@page import="java.sql.ResultSet"%>
@@ -15,16 +16,11 @@
 	<a href="FormularioInsertarLibro.jsp">Agregar</a>
 	<br/>
 	<%
-		Connection conexion = null;
-		Statement sentencia = null;
 		ResultSet rs = null;
 
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			conexion = DriverManager.getConnection(
-					"jdbc:mysql://localhost:3306/librobd", "root","C0raz0ndeacer0");
-			sentencia = conexion.createStatement();
-			rs = sentencia.executeQuery("SELECT * FROM libro");
+			JDBCHelper helper = new JDBCHelper();
+			rs = helper.seleccionarRegistros("SELECT * FROM libro");
 			%>
 			<table class="egt" border="1">
 
@@ -54,10 +50,7 @@
 		</table>
 	
 	<%	
-		} catch (ClassNotFoundException e) {
-			System.out.println("Error en la carga del driver: "
-					+ e.getMessage());
-		} catch (SQLException e) {
+		}  catch (SQLException e) {
 			System.out.println("Error accediendo a las BDs: "
 					+ e.getMessage());
 		} finally {
@@ -70,23 +63,7 @@
 				}
 
 			}
-			if (sentencia != null) {
-				try {
-					sentencia.close();
-				} catch (SQLException e) {
-					System.out.println("Error cerrando sentencia: "
-							+ e.getMessage());
-				}
-
-			}
-			if (conexion != null) {
-				try {
-					conexion.close();
-				} catch (SQLException e) {
-					System.out.println("Error cerrando la conexión: "
-							+ e.getMessage());
-				}
-			}
+			
 		}
 	%>
 </body>

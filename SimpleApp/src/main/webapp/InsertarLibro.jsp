@@ -1,3 +1,4 @@
+<%@page import="com.alan.init.JDBCHelper"%>
 <%@page import="java.sql.SQLException"%>
 <%@page import="java.sql.DriverManager"%>
 <%@page import="java.sql.ResultSet"%>
@@ -14,54 +15,22 @@
 </head>
 <body>
 	<%
-		Connection conexion = null;
-		Statement sentencia = null;
-		ResultSet rs = null;
-		
+				
 		//Recogiendo parámetros
 		String isbn = request.getParameter("isbn");
 		String titulo = request.getParameter("titulo");
 		String categoria = request.getParameter("categoria");
 		
-		try{
-			Class.forName("com.mysql.jdbc.Driver");
-			conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/librobd", "root", "C0raz0ndeacer0");
-			sentencia = conexion.createStatement();
+		
+		String sql = "INSERT INTO LIBRO (isbn, titulo, categoria) VALUES('"+isbn+"','"+titulo+"','"+categoria+"')";
 			
-			String sql = "INSERT INTO LIBRO (isbn, titulo, categoria) VALUES('"+isbn+"','"+titulo+"','"+categoria+"')";
+		JDBCHelper helper = new JDBCHelper();
+		
+		helper.modificarRegitro(sql);
 			
-			sentencia.executeUpdate(sql);
-			
-			response.sendRedirect("MostrarLibros.jsp");
-		}catch(ClassNotFoundException e){
-			System.out.println("Error en la carga del driver: "+e.getMessage());			
-		}catch(SQLException e){
-			System.out.println("Error accediendo a las BDs: " +e.getMessage());
-		}finally{
-			if(rs!=null){
-				try{
-					rs.close();
-				}catch(SQLException e){
-					System.out.println("Error cerrando el ResultSet: "+e.getMessage());
-				}
-				
-			}
-			if(sentencia!=null){
-				try{
-					sentencia.close();
-				}catch(SQLException e){
-					System.out.println("Error cerrando sentencia: "+e.getMessage());
-				}
-				
-			}
-			if(conexion!=null){
-				try{
-					conexion.close();
-				}catch(SQLException e){
-					System.out.println("Error cerrando la conexión: "+e.getMessage());
-				}
-			}
-		}
+		response.sendRedirect("MostrarLibros.jsp");
+		
+		
 	%>
 </body>
 </html>
